@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { EditorComponent as baklavaEditor } from "@baklavajs/renderer-vue";
+import { useBaklava } from "@baklavajs/renderer-vue";
+import "@baklavajs/themes/dist/syrup-dark.css";
 import HelloWorld from './components/HelloWorld.vue'
 
 window.electronAPI.sendMessage('Hello from App.vue!');
+const baklava = useBaklava();
 </script>
 
 <template>
@@ -14,6 +18,9 @@ window.electronAPI.sendMessage('Hello from App.vue!');
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
+  <div style="width: 90vw; height: 90vh">
+    <baklavaEditor :view-model="baklava" />
+  </div>
 </template>
 
 <style scoped>
