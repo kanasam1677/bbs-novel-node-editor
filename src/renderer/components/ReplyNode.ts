@@ -1,10 +1,11 @@
 
-import { Node, NodeInterface, CalculateFunction, NumberInterface, SelectInterface } from "baklavajs";
-
+import { markRaw } from "vue";
+import { Node, NodeInterface, CalculateFunction, NumberInterface, TextInputInterface } from "baklavajs";
+import MultiLineTextComponent from "./MultiLineTextComponent.vue"
 interface Inputs {
+    contents: string;
     number1: number;
     number2: number;
-    operation: string;
 }
 
 interface Outputs {
@@ -17,9 +18,9 @@ export default class ReplyNode extends Node<Inputs, Outputs> {
     width = 400;
 
     public inputs = {
+        contents: new TextInputInterface("内容", "").setPort(false).setComponent(markRaw(MultiLineTextComponent)),
         number1: new NumberInterface("Number", 1),
         number2: new NumberInterface("Number", 2),
-        operation: new SelectInterface("Operation", "Add", ["Add", "Subtract"]).setPort(false),
     };
 
     public outputs = {
@@ -33,7 +34,7 @@ export default class ReplyNode extends Node<Inputs, Outputs> {
         this.initializeIo();
     }
 
-    public calculate: CalculateFunction<Inputs, Outputs> = ({ number1, number2, operation }) => {
+    public calculate: CalculateFunction<Inputs, Outputs> = ({ number1, number2, contents: operation }) => {
         let output;
         if (operation === "Add") {
             output = number1 + number2;
