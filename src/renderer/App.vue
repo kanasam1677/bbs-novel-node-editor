@@ -9,6 +9,7 @@ import ReplyNode from "./components/ReplyNode";
 window.electronAPI.sendMessage('Hello from App.vue!');
 const baklava = useBaklava();
 baklava.editor.registerNodeType(ReplyNode);
+baklava.settings.nodes.defaultWidth=400;
 </script>
 
 <template>
