@@ -24,22 +24,17 @@ baklava.settings.nodes.defaultWidth=400;
     </div>
     <HelloWorld msg="Vite + Vue" />
   -->
-  <div style="width: 90vw; height: 90vh">
+  <div style="width: 100vw; height: 100vh">
     <baklavaEditor :view-model="baklava" />
   </div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<style>
+#app{
+  margin: 0;
+  padding:0;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+button[title$="Subgraph"]{
+  visibility: hidden;
 }
 </style>
