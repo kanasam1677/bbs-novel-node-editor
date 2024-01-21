@@ -25,6 +25,7 @@
     "vite": "^4.5.0"
   },
   "dependencies": {
+    "baklavajs": "^2.3.0",
     "vue": "^3.3.8"
   }
 }
