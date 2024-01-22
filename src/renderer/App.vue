@@ -10,6 +10,12 @@ window.electronAPI.sendMessage('Hello from App.vue!');
 const baklava = useBaklava();
 baklava.editor.registerNodeType(ReplyNode);
 baklava.settings.nodes.defaultWidth=400;
+
+window.electronAPI.onExport((value:any)=>{
+  window.electronAPI.sendMessage('export started');
+}
+);
+
 </script>
 
 <template>
