@@ -1,5 +1,6 @@
-import {app, BrowserWindow, ipcMain, session} from 'electron';
+import {app, BrowserWindow, ipcMain, session, Menu} from 'electron';
 import {join} from 'path';
+import { menu } from './menu';
 
 function createWindow () {
   const mainWindow = new BrowserWindow({
@@ -19,6 +20,7 @@ function createWindow () {
   else {
     mainWindow.loadFile(join(app.getAppPath(), 'renderer', 'index.html'));
   }
+  Menu.setApplicationMenu(menu);
 }
 
 app.whenReady().then(() => {
