@@ -5,6 +5,7 @@ import "@baklavajs/themes/dist/syrup-dark.css";
 import HelloWorld from './components/HelloWorld.vue'
 
 import ReplyNode from "./components/ReplyNode";
+import {ExportNode} from "./components/ExportNode"
 
 window.electronAPI.sendMessage('Hello from App.vue!');
 const baklava = useBaklava();
@@ -13,6 +14,8 @@ baklava.settings.nodes.defaultWidth=400;
 
 window.electronAPI.onExport((value:any)=>{
   window.electronAPI.sendMessage('export started');
+  const result = ExportNode(baklava.editor.graph.nodes);
+  window.electronAPI.sendMessage(result);
 }
 );
 
