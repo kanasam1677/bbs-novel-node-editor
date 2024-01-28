@@ -20,10 +20,16 @@ window.electronAPI.onExport((value:any)=>{
   window.electronAPI.sendMessage('export started');
   ExportNode(baklava.editor.graph.nodes, baklava.editor, engine).then((result)=>
   {
-    window.electronAPI.saveOnFile(result);
+    window.electronAPI.saveOnFile(result, 'export');
   });
-}
-);
+});
+
+window.electronAPI.onSave((type:string)=>{
+  window.electronAPI.sendMessage('save started');
+  const saveData = baklava.editor.save();
+  window.electronAPI.saveOnFile(JSON.stringify(saveData), type);
+});
+
 
 </script>
 

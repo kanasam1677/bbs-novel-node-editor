@@ -10,7 +10,7 @@ export function CreateMenu(mainWindow:BrowserWindow){
         {
             label: 'File',
             submenu: [
-                {label:'Save', accelerator:'CmdOrCtrl+S'},
+                {label:'Save', accelerator:'CmdOrCtrl+S', click:()=>mainWindow.webContents.send("save", "save")},
                 {label:'Open', accelerator:'CmdOrCtrl+O'},
                 {label:'Export', accelerator:'CmdOrCtrl+E', click:()=>mainWindow.webContents.send("export", "str")},
                 isMac ? { role: 'close' } : { role: 'quit' }

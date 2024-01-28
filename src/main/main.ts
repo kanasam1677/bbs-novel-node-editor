@@ -53,26 +53,29 @@ ipcMain.on('message', (event, message) => {
   console.log(message);
 })
 
-ipcMain.on('saveOnFile', (event, contents) => {
+ipcMain.on('saveOnFile', (event, contents, type) => {
   dialog.showSaveDialog(
     {
       defaultPath: app.getPath('documents'),
-      filters: [
+      filters: [(type=='export')?
         {
           extensions: ['txt'],
           name: 'txt ファイル',
+        }:{
+          extensions: ['json'],
+          name: 'ノードエディタ状態保存ファイル',
         },
       ],
     }
   ).then((result)=>{
     if (result.canceled || !result.filePath){
-      console.log('export cancelled');
+      console.log(`${type} cancelled`);
       return;
     }
     fs.writeFile(
       result.filePath,
       contents,
-    ).then(()=>console.log('export completed'))
+    ).then(()=>console.log(`${type} completed`))
     .catch((reason)=>console.log(reason));
   });
 })
