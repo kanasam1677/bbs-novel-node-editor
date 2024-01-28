@@ -1,4 +1,5 @@
-import {app, BrowserWindow, ipcMain, session, Menu} from 'electron';
+import {app, BrowserWindow, ipcMain, session, Menu, dialog} from 'electron';
+import fs from "node:fs/promises";
 import {join} from 'path';
 import { CreateMenu } from './menu';
 
@@ -50,4 +51,28 @@ app.on('window-all-closed', function () {
 
 ipcMain.on('message', (event, message) => {
   console.log(message);
+})
+
+ipcMain.on('saveOnFile', (event, contents) => {
+  dialog.showSaveDialog(
+    {
+      defaultPath: app.getPath('documents'),
+      filters: [
+        {
+          extensions: ['txt'],
+          name: 'txt ファイル',
+        },
+      ],
+    }
+  ).then((result)=>{
+    if (result.canceled || !result.filePath){
+      console.log('export cancelled');
+      return;
+    }
+    fs.writeFile(
+      result.filePath,
+      contents,
+    ).then(()=>console.log('export completed'))
+    .catch((reason)=>console.log(reason));
+  });
 })

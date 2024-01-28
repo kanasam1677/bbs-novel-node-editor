@@ -20,7 +20,7 @@ window.electronAPI.onExport((value:any)=>{
   window.electronAPI.sendMessage('export started');
   ExportNode(baklava.editor.graph.nodes, baklava.editor, engine).then((result)=>
   {
-    window.electronAPI.sendMessage(result);
+    window.electronAPI.saveOnFile(result);
   });
 }
 );
