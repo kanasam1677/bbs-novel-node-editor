@@ -1,5 +1,35 @@
-import {BrowserWindow, Menu, MenuItemConstructorOptions } from 'electron';
+import {BrowserWindow, Menu, MenuItemConstructorOptions, app, dialog } from 'electron';
+import fs from "node:fs/promises";
 
+function LoadClicked(mainWindow:BrowserWindow){
+    console.log("load started");
+    dialog.showOpenDialog(
+        {
+            defaultPath: app.getPath('documents'),
+            filters: [{
+                extensions: ['json'],
+                name: 'ノードエディタ状態保存ファイル',
+              },
+            ],
+            properties: ['openFile'],
+        }
+    ).then((result)=>{
+        if (result.canceled){
+            console.log(`load cancelled`);
+            return;
+        }
+        if(result.filePaths.length!=1){
+            throw new Error("wrong filenum")
+        }
+        fs.readFile(
+        result.filePaths[0]
+        ).then((content)=>{
+            const contentStr = content.toString();
+            mainWindow.webContents.send("load", contentStr);
+        })
+        .catch((reason)=>console.log(reason));
+    });
+}
 
 // テンプレートからメニューを作成
 export function CreateMenu(mainWindow:BrowserWindow){
@@ -11,7 +41,7 @@ export function CreateMenu(mainWindow:BrowserWindow){
             label: 'File',
             submenu: [
                 {label:'Save', accelerator:'CmdOrCtrl+S', click:()=>mainWindow.webContents.send("save", "save")},
-                {label:'Open', accelerator:'CmdOrCtrl+O'},
+                {label:'Open', accelerator:'CmdOrCtrl+O', click:()=>LoadClicked(mainWindow)},
                 {label:'Export', accelerator:'CmdOrCtrl+E', click:()=>mainWindow.webContents.send("export", "str")},
                 isMac ? { role: 'close' } : { role: 'quit' }
             ]
