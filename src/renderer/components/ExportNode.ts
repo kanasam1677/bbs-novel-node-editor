@@ -1,5 +1,5 @@
 import { from } from "linq-to-typescript";
-import { AbstractNode } from "baklavajs";
+import { AbstractNode, DependencyEngine, Editor, applyResult } from "baklavajs";
 import ReplyNode from "./ReplyNode";
 
 function GetNextNum(nowNum:number, randPlus:number, randFix:number):number
@@ -28,7 +28,16 @@ function MakeNodeString(node:AbstractNode):string
     if(node instanceof ReplyNode){
         const resNum = node.inputs.resNumber.value;
         const handleName = (!node.inputs.handleName.value)?node.inputs.handleName.name:node.inputs.handleName.value;
-        const contents = node.inputs.contents.value;
+        let contents = node.inputs.contents.value;
+        const nodeNum = node.inputs.nodeNum.value;
+        if(nodeNum>0){
+            let ancStr = '';
+            for(let i=1; i<nodeNum + 1; i++){
+                const ancNum = node.outputs[`anchor${i}`].value;
+                ancStr = ancStr + `>>${ancNum} `
+            }
+            contents = ancStr + "\n" + contents;
+        }
         return `《id:r${resNum}》${resNum}：${handleName}`+"\n"+
         `${contents}`+"\n"+
         `《id:r${resNum}e》　`
@@ -38,7 +47,7 @@ function MakeNodeString(node:AbstractNode):string
     }
 }
 
-export function ExportNode(nodes:readonly AbstractNode[]):string
+export function ExportNode(nodes:readonly AbstractNode[], editor:Editor, engine:DependencyEngine):Promise<string>
 {
     //HACK:Typescriptのpositionが存在しない旨の警告を抑制
     //     positionはAbstructNodeにrenderer-vueにて後付けされている？？がそれを参照する方法がわからない
@@ -47,8 +56,12 @@ export function ExportNode(nodes:readonly AbstractNode[]):string
     const sortedNodes = from(nodes).orderBy(n=>(n.position.y), (a,b)=>(Number(a)-Number(b))).toArray();
 
     SetResNumber(sortedNodes);
+    return engine.runOnce({}).then((result)=>{
+        if(!result) return "";
+        applyResult(result, editor);
+        return from(sortedNodes)
+            .select(n=>MakeNodeString(n))
+            .aggregate((a,b)=>a+"\n"+b);
+    });
 
-    return from(sortedNodes)
-        .select(n=>MakeNodeString(n))
-        .aggregate((a,b)=>a+"\n"+b);
 }

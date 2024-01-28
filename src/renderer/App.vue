@@ -6,16 +6,22 @@ import HelloWorld from './components/HelloWorld.vue'
 
 import ReplyNode from "./components/ReplyNode";
 import {ExportNode} from "./components/ExportNode"
+import { DependencyEngine } from "baklavajs";
+import { applyResult } from "@baklavajs/engine";
 
 window.electronAPI.sendMessage('Hello from App.vue!');
 const baklava = useBaklava();
 baklava.editor.registerNodeType(ReplyNode);
 baklava.settings.nodes.defaultWidth=400;
+const engine = new DependencyEngine(baklava.editor);
+
 
 window.electronAPI.onExport((value:any)=>{
   window.electronAPI.sendMessage('export started');
-  const result = ExportNode(baklava.editor.graph.nodes);
-  window.electronAPI.sendMessage(result);
+  ExportNode(baklava.editor.graph.nodes, baklava.editor, engine).then((result)=>
+  {
+    window.electronAPI.sendMessage(result);
+  });
 }
 );
 

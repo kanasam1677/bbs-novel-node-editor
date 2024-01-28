@@ -16,12 +16,31 @@ export default defineDynamicNode({
         output: ()=>new NodeInterface("レス番", 0),
     },
     onUpdate({nodeNum}){
-        let result: Record<string, (() => NodeInterface<any>) | undefined> = {};
+        let inResult: Record<string, (() => NodeInterface<any>) | undefined> = {};
+        let outResult: Record<string, (() => NodeInterface<any>) | undefined> = {};
         for (let i = 1; i < nodeNum+1; i++) {
-            result[`anchor${i}`] = (()=>new IntegerInterface(`アンカー${i}`, 0));
+            const intfName = `anchor${i}`;
+            const dispName = `アンカー${i}`;
+            inResult[intfName] = (()=>new IntegerInterface(dispName, 0));
+            outResult[intfName] = (()=>new NodeInterface(dispName, 0).setHidden(true));
         }
         return {
-            inputs:result
+            inputs:inResult,
+            outputs:outResult
         };
-    }
+    },
+    calculate(inputs){
+        let result: Record<string, number> = {
+            output:inputs.resNumber
+        };
+        const nodeNum = inputs.nodeNum;
+        if(nodeNum>0){
+            let ancStr = '';
+            for(let i=1; i<nodeNum + 1; i++){
+                const ancNum = inputs[`anchor${i}`];
+                result[`anchor${i}`]=ancNum;
+            }
+        }
+        return result;
+    },
 });
