@@ -27,16 +27,38 @@ function MakeNodeString(node:AbstractNode):string
 {
     if(node instanceof ReplyNode){
         const resNum = node.inputs.resNumber.value;
-        const handleName = (!node.inputs.handleName.value)?node.inputs.handleName.name:node.inputs.handleName.value;
+        let handleName = (!node.inputs.handleName.value)?node.inputs.handleName.name:node.inputs.handleName.value;
         let contents = node.inputs.contents.value;
         const nodeNum = node.inputs.nodeNum.value;
         if(nodeNum>0){
-            let ancStr = '';
+            const ancList:Map<number, number> = new Map();
+            const hitList:Set<number> = new Set();
             for(let i=1; i<nodeNum + 1; i++){
-                const ancNum = node.outputs[`anchor${i}`].value;
-                ancStr = ancStr + `>>${ancNum} `
+                ancList.set(i, node.outputs[`anchor${i}`].value);
             }
-            contents = ancStr + "\n" + contents;
+            const ancPat = /\$\$(\d+)/g;
+            const noAncPat = /\$\$r(\d+)/g;
+            function SetActuallyNum(match:string, matchNum:string, head:string):string{
+                const key = parseInt(matchNum);
+                if(ancList.has(key)){
+                    hitList.add(key);//重複時自動無視
+                    return head + ancList.get(key)?.toString();
+                }
+                else{
+                    return match;
+                }
+            }
+            handleName = handleName.replaceAll(ancPat,(match,matchNum)=>SetActuallyNum(match, matchNum, '>>'));
+            contents = contents.replaceAll(ancPat,(match,matchNum)=>SetActuallyNum(match, matchNum, '>>'));
+            handleName = handleName.replaceAll(noAncPat,(match,matchNum)=>SetActuallyNum(match, matchNum, ''));
+            contents = contents.replaceAll(noAncPat,(match,matchNum)=>SetActuallyNum(match, matchNum, ''));
+            const noHitAncList = from(ancList).where(n=>!hitList.has(n[0]));
+            if(noHitAncList.any()){
+                const noHitAncStr = noHitAncList
+                    .select(n=>`>>${n[1]}`)
+                    .aggregate((a,b)=>`${a} ${b}`);
+                contents = noHitAncStr + '\n' + contents;
+            }            
         }
         return `《id:r${resNum}》${resNum}：${handleName}`+"\n"+
         `${contents}`+"\n"+
