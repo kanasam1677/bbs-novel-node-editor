@@ -53,6 +53,10 @@ ipcMain.on('message', (event, message) => {
   console.log(message);
 })
 
+ipcMain.on('errorMessage', (event, title, content) => {
+  dialog.showErrorBox(title, content);
+})
+
 ipcMain.on('saveOnFile', (event, contents, type) => {
   dialog.showSaveDialog(
     {

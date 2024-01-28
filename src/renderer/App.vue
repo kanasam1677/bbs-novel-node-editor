@@ -41,7 +41,7 @@ window.electronAPI.onLoad((contentStr:string)=>{
     window.electronAPI.sendMessage('load completed');
   }catch(e :unknown){
     if(e instanceof SyntaxError || e instanceof TypeError){
-      window.electronAPI.sendMessage(e.message);
+      window.electronAPI.sendErrorMessage('ファイル読み込み失敗', 'ファイルの読み込みに失敗しました。\n'+e.message);
     }
     else{
       throw e;

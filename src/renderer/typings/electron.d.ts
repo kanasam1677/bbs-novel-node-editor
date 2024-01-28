@@ -3,6 +3,7 @@
  */
 export default interface ElectronApi {
   sendMessage: (message: string) => void,
+  sendErrorMessage: (title: string, content: string) => void,
   saveOnFile: (contents: string, type: string) => void,
   onExport(value:any):void;
   onSave(value:any):void;
