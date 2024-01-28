@@ -7,7 +7,7 @@ import HelloWorld from './components/HelloWorld.vue'
 import ReplyNode from "./components/ReplyNode";
 import {ExportNode} from "./components/ExportNode"
 import { DependencyEngine } from "baklavajs";
-import { applyResult } from "@baklavajs/engine";
+import { from } from "linq-to-typescript";
 
 window.electronAPI.sendMessage('Hello from App.vue!');
 const baklava = useBaklava();
@@ -20,10 +20,35 @@ window.electronAPI.onExport((value:any)=>{
   window.electronAPI.sendMessage('export started');
   ExportNode(baklava.editor.graph.nodes, baklava.editor, engine).then((result)=>
   {
-    window.electronAPI.saveOnFile(result);
+    window.electronAPI.saveOnFile(result, 'export');
   });
-}
-);
+});
+
+window.electronAPI.onSave((type:string)=>{
+  window.electronAPI.sendMessage('save started');
+  const saveData = baklava.editor.save();
+  window.electronAPI.saveOnFile(JSON.stringify(saveData), type);
+});
+
+window.electronAPI.onLoad((contentStr:string)=>{
+  window.electronAPI.sendMessage('load data recieved');
+  window.electronAPI.sendMessage(contentStr);
+  try{
+    const jsonObj = JSON.parse(contentStr);
+    const result = baklava.editor.load(jsonObj);
+    if(result.length!=0)
+      throw new SyntaxError(from(result).aggregate((a,b)=>a+'\n'+b));
+    window.electronAPI.sendMessage('load completed');
+  }catch(e :unknown){
+    if(e instanceof SyntaxError || e instanceof TypeError){
+      window.electronAPI.sendErrorMessage('ファイル読み込み失敗', 'ファイルの読み込みに失敗しました。\n'+e.message);
+    }
+    else{
+      throw e;
+    }
+  }
+});
+
 
 </script>
 
