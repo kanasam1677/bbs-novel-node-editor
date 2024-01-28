@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "baklavajs": "^2.3.0",
+    "linq-to-typescript": "^11.1.0",
     "vue": "^3.3.8"
   }
 }
