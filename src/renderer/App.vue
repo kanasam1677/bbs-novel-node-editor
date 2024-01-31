@@ -6,6 +6,7 @@ import HelloWorld from './components/HelloWorld.vue'
 
 import ReplyNode from "./components/ReplyNode";
 import SettingNode from "./components/SettingNode";
+import DescriptiveNode from "./components/DescriptiveNode";
 import {ExportNode} from "./components/ExportNode"
 import { DependencyEngine } from "baklavajs";
 import { from } from "linq-to-typescript";
@@ -14,6 +15,7 @@ window.electronAPI.sendMessage('Hello from App.vue!');
 const baklava = useBaklava();
 baklava.editor.registerNodeType(ReplyNode);
 baklava.editor.registerNodeType(SettingNode);
+baklava.editor.registerNodeType(DescriptiveNode);
 baklava.settings.nodes.defaultWidth=400;
 const engine = new DependencyEngine(baklava.editor);
 

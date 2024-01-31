@@ -2,6 +2,7 @@ import { from } from "linq-to-typescript";
 import { AbstractNode, DependencyEngine, Editor, applyResult } from "baklavajs";
 import ReplyNode from "./ReplyNode";
 import SettingNode from "./SettingNode";
+import DescriptiveNode from "./DescriptiveNode";
 
 function GetNextNum(nowNum:number, randPlus:number, randFix:number):number
 {
@@ -37,6 +38,9 @@ function SetResNumber(sortedNodes:readonly AbstractNode[]):void
                 if(lastNum != undefined)
                     nowNum = GetNextNum(lastNum, randPlus, randFix);//計算済みの場合前回の結果から再計算
             }
+        }
+        else if(node instanceof DescriptiveNode){
+            //処理なし
         }
         else{
             throw new Error('not implemented');
@@ -87,6 +91,9 @@ function MakeNodeString(node:AbstractNode):string
     }
     else if(node instanceof SettingNode){
         return '';
+    }        
+    else if(node instanceof DescriptiveNode){
+        return node.inputs.contents.value + "\n";
     }
     else{
         throw new Error('not implemented');
