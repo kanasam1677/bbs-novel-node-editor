@@ -18,6 +18,36 @@ baklava.settings.nodes.defaultWidth=400;
 const engine = new DependencyEngine(baklava.editor);
 
 
+function onKeyDown(ev:KeyboardEvent){
+  if(document.activeElement?.classList.contains("baklava-input")??false)
+    return;
+
+  //HACK:Typescriptのpannning,scalingが存在しない旨の警告を抑制
+  //     positionはAbstructNodeにrenderer-vueにて後付けされている？？がそれを参照する方法がわからない
+  //     https://github.com/newcat/baklavajs/blob/60f0c88a462c21536ffe99803974f6d38c945b70/packages/renderer-vue/src/overrides.d.ts#L36
+  switch(ev.code){
+    case "KeyW":
+      // @ts-ignore
+      baklava.displayedGraph.panning.y += 10; 
+      break;
+    case "KeyA":
+      // @ts-ignore
+      baklava.displayedGraph.panning.x += 10; 
+      break;
+    case "KeyS":
+      // @ts-ignore
+      baklava.displayedGraph.panning.y -= 10; 
+      break;
+    case "KeyD":
+      // @ts-ignore
+      baklava.displayedGraph.panning.x -= 10; 
+      break;
+    default:
+        break;
+  }
+}
+window.addEventListener("keydown",onKeyDown);
+
 window.electronAPI.onExport((value:any)=>{
   window.electronAPI.sendMessage('export started');
   ExportNode(baklava.editor.graph.nodes, baklava.editor, engine).then((result)=>
