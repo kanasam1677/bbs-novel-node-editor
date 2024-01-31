@@ -11,6 +11,7 @@ function GetNextNum(nowNum:number, randPlus:number, randFix:number):number
 
 function SetResNumber(sortedNodes:readonly AbstractNode[]):void
 {
+    let lastNum:(number|undefined) = undefined;
     let nowNum = 1;
     let randPlus = 4;
     let randFix = 1;
@@ -19,15 +20,23 @@ function SetResNumber(sortedNodes:readonly AbstractNode[]):void
         if(node instanceof ReplyNode){
             node.inputs.resNumber.value = nowNum;
             node.inputs.defaultName.value = defaultName;
+            lastNum = nowNum;
             nowNum = GetNextNum(nowNum, randPlus, randFix);
         }
         else if(node instanceof SettingNode){
-            nowNum = node.inputs.startNum.value;
             randPlus = node.inputs.randPlus.value;
             randFix = node.inputs.randFix.value;
             const dn = node.inputs.defaultName.value;
             if(dn)
-                defaultName = node.inputs.defaultName.value;
+            defaultName = node.inputs.defaultName.value;
+            const nn = node.inputs.startNum.value;
+            if(nn>0){
+                nowNum = nn;
+            }
+            else{
+                if(lastNum != undefined)
+                    nowNum = GetNextNum(lastNum, randPlus, randFix);//計算済みの場合前回の結果から再計算
+            }
         }
         else{
             throw new Error('not implemented');
