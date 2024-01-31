@@ -14,15 +14,20 @@ function SetResNumber(sortedNodes:readonly AbstractNode[]):void
     let nowNum = 1;
     let randPlus = 4;
     let randFix = 1;
+    let defaultName = "名無しさん";
     for ( const node of sortedNodes){
         if(node instanceof ReplyNode){
             node.inputs.resNumber.value = nowNum;
+            node.inputs.defaultName.value = defaultName;
             nowNum = GetNextNum(nowNum, randPlus, randFix);
         }
         else if(node instanceof SettingNode){
             nowNum = node.inputs.startNum.value;
             randPlus = node.inputs.randPlus.value;
             randFix = node.inputs.randFix.value;
+            const dn = node.inputs.defaultName.value;
+            if(dn)
+                defaultName = node.inputs.defaultName.value;
         }
         else{
             throw new Error('not implemented');
@@ -34,7 +39,7 @@ function MakeNodeString(node:AbstractNode):string
 {
     if(node instanceof ReplyNode){
         const resNum = node.inputs.resNumber.value;
-        let handleName = (!node.inputs.handleName.value)?node.inputs.handleName.name:node.inputs.handleName.value;
+        let handleName = (!node.inputs.handleName.value)?node.inputs.defaultName.value:node.inputs.handleName.value;
         let contents = node.inputs.contents.value;
         const nodeNum = node.inputs.nodeNum.value;
         if(nodeNum>0){
