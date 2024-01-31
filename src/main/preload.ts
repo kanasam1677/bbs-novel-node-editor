@@ -7,4 +7,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onExport: (callback) => ipcRenderer.on('export', (_event, value)=> callback(value)),
   onSave: (callback) => ipcRenderer.on('save', (_event, value)=> callback(value)),
   onLoad: (callback) => ipcRenderer.on('load', (_event, contentStr)=> callback(contentStr)),
+  onCommand: (callback) => ipcRenderer.on('command', (_event, commandStr)=> callback(commandStr)),
 })

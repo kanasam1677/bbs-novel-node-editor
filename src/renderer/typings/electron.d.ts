@@ -8,6 +8,7 @@ export default interface ElectronApi {
   onExport(value:any):void;
   onSave(value:any):void;
   onLoad(contentStr:any):void;
+  onCommand(commandStr:any):void;
 }
 
 declare global {

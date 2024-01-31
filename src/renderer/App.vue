@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { EditorComponent as baklavaEditor } from "@baklavajs/renderer-vue";
-import { useBaklava } from "@baklavajs/renderer-vue";
+import { useBaklava, Commands} from "@baklavajs/renderer-vue";
 import "@baklavajs/themes/dist/syrup-dark.css";
 import HelloWorld from './components/HelloWorld.vue'
 
@@ -107,6 +107,27 @@ window.electronAPI.onLoad((contentStr:string)=>{
   }
 });
 
+window.electronAPI.onCommand((commandStr:string)=>{
+  switch(commandStr){
+    case 'undo':
+      baklava.commandHandler.executeCommand<Commands.UndoCommand>(Commands.UNDO_COMMAND);
+      break;
+    case 'redo':
+      baklava.commandHandler.executeCommand<Commands.RedoCommand>(Commands.REDO_COMMAND);
+      break;
+    case 'copy':
+      baklava.commandHandler.executeCommand<Commands.CopyCommand>(Commands.COPY_COMMAND);
+      break;
+    case 'paste':
+      baklava.commandHandler.executeCommand<Commands.PasteCommand>(Commands.PASTE_COMMAND);
+      break;
+    case 'delete':
+      baklava.commandHandler.executeCommand<Commands.DeleteNodesCommand>(Commands.DELETE_NODES_COMMAND);
+      break;
+    default:
+      throw new Error('not implemented');
+  }
+});
 
 </script>
 
