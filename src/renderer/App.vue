@@ -17,36 +17,58 @@ baklava.editor.registerNodeType(SettingNode);
 baklava.settings.nodes.defaultWidth=400;
 const engine = new DependencyEngine(baklava.editor);
 
-
+const pressedKeyList = new Set<string>();
 function onKeyDown(ev:KeyboardEvent){
+  switch(ev.code){
+    case "KeyW":
+    case "KeyA":
+    case "KeyS":
+    case "KeyD":
+      pressedKeyList.add(ev.code)
+    default:
+        break;
+  }
+}
+function onKeyUp(ev:KeyboardEvent){
+  switch(ev.code){
+    case "KeyW":
+    case "KeyA":
+    case "KeyS":
+    case "KeyD":
+      pressedKeyList.delete(ev.code)
+    default:
+        break;
+  }
+}
+function onKeyInterval(){
   if(document.activeElement?.classList.contains("baklava-input")??false)
     return;
 
   //HACK:Typescriptのpannning,scalingが存在しない旨の警告を抑制
   //     positionはAbstructNodeにrenderer-vueにて後付けされている？？がそれを参照する方法がわからない
   //     https://github.com/newcat/baklavajs/blob/60f0c88a462c21536ffe99803974f6d38c945b70/packages/renderer-vue/src/overrides.d.ts#L36
-  switch(ev.code){
-    case "KeyW":
-      // @ts-ignore
-      baklava.displayedGraph.panning.y += 10; 
-      break;
-    case "KeyA":
-      // @ts-ignore
-      baklava.displayedGraph.panning.x += 10; 
-      break;
-    case "KeyS":
-      // @ts-ignore
-      baklava.displayedGraph.panning.y -= 10; 
-      break;
-    case "KeyD":
-      // @ts-ignore
-      baklava.displayedGraph.panning.x -= 10; 
-      break;
-    default:
-        break;
+  if(pressedKeyList.has("KeyW")){
+    // @ts-ignore
+    baklava.displayedGraph.panning.y += 10; 
+  }
+  if(pressedKeyList.has("KeyA")){
+    // @ts-ignore
+    baklava.displayedGraph.panning.x += 10; 
+
+  }
+  if(pressedKeyList.has("KeyS")){
+    // @ts-ignore
+    baklava.displayedGraph.panning.y -= 10; 
+  }
+  if(pressedKeyList.has("KeyD")){
+    // @ts-ignore
+    baklava.displayedGraph.panning.x -= 10; 
   }
 }
 window.addEventListener("keydown",onKeyDown);
+window.addEventListener("keyup",onKeyUp);
+setInterval(onKeyInterval,10);
+
 
 window.electronAPI.onExport((value:any)=>{
   window.electronAPI.sendMessage('export started');
