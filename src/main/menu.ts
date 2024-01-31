@@ -5,7 +5,7 @@ function LoadClicked(mainWindow:BrowserWindow){
     console.log("load started");
     dialog.showOpenDialog(
         {
-            defaultPath: app.getPath('documents'),
+            //defaultPath: app.getPath('documents'),
             filters: [{
                 extensions: ['json'],
                 name: 'ノードエディタ状態保存ファイル',

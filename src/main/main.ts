@@ -60,7 +60,7 @@ ipcMain.on('errorMessage', (event, title, content) => {
 ipcMain.on('saveOnFile', (event, contents, type) => {
   dialog.showSaveDialog(
     {
-      defaultPath: app.getPath('documents'),
+      //defaultPath: app.getPath('documents'),
       filters: [(type=='export')?
         {
           extensions: ['txt'],
