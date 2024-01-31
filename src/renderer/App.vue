@@ -41,28 +41,30 @@ function onKeyUp(ev:KeyboardEvent){
   }
 }
 function onKeyInterval(){
+  //HACK:Typescriptのpanning,scalingが存在しない旨の警告を抑制
+  //     positionはAbstructNodeにrenderer-vueにて後付けされている？？がそれを参照する方法がわからない
+  //     https://github.com/newcat/baklavajs/blob/60f0c88a462c21536ffe99803974f6d38c945b70/packages/renderer-vue/src/overrides.d.ts#L36
+  const speed = 10;
+  // @ts-ignore
+  const scaledSpeed = speed * (1.0/baklava.displayedGraph.scaling); 
   if(document.activeElement?.classList.contains("baklava-input")??false)
     return;
 
-  //HACK:Typescriptのpannning,scalingが存在しない旨の警告を抑制
-  //     positionはAbstructNodeにrenderer-vueにて後付けされている？？がそれを参照する方法がわからない
-  //     https://github.com/newcat/baklavajs/blob/60f0c88a462c21536ffe99803974f6d38c945b70/packages/renderer-vue/src/overrides.d.ts#L36
   if(pressedKeyList.has("KeyW")){
     // @ts-ignore
-    baklava.displayedGraph.panning.y += 10; 
+    baklava.displayedGraph.panning.y += scaledSpeed; 
   }
   if(pressedKeyList.has("KeyA")){
     // @ts-ignore
-    baklava.displayedGraph.panning.x += 10; 
-
+    baklava.displayedGraph.panning.x += scaledSpeed; 
   }
   if(pressedKeyList.has("KeyS")){
     // @ts-ignore
-    baklava.displayedGraph.panning.y -= 10; 
+    baklava.displayedGraph.panning.y -= scaledSpeed; 
   }
   if(pressedKeyList.has("KeyD")){
     // @ts-ignore
-    baklava.displayedGraph.panning.x -= 10; 
+    baklava.displayedGraph.panning.x -= scaledSpeed; 
   }
 }
 window.addEventListener("keydown",onKeyDown);
