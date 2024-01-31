@@ -1,11 +1,11 @@
-import {BrowserWindow, Menu, MenuItemConstructorOptions, app, dialog } from 'electron';
+import {BrowserWindow, Menu, MenuItemConstructorOptions, app, dialog, KeyboardInputEvent} from 'electron';
 import fs from "node:fs/promises";
 
 function LoadClicked(mainWindow:BrowserWindow){
     console.log("load started");
     dialog.showOpenDialog(
         {
-            defaultPath: app.getPath('documents'),
+            //defaultPath: app.getPath('documents'),
             filters: [{
                 extensions: ['json'],
                 name: 'ノードエディタ状態保存ファイル',
@@ -46,7 +46,18 @@ export function CreateMenu(mainWindow:BrowserWindow){
                 isMac ? { role: 'close' } : { role: 'quit' }
             ]
         },
-        { role: 'editMenu' },
+        {
+            label: 'Edit',
+            submenu: [
+              { label: 'Undo', click:()=>mainWindow.webContents.send("command", "undo") },
+              { label: 'Redo', click:()=>mainWindow.webContents.send("command", "redo")  },
+              { type: 'separator' },
+              { label: 'Copy', click:()=>mainWindow.webContents.send("command", "copy")  },
+              { label: 'Paste', click:()=>mainWindow.webContents.send("command", "paste")  },
+              { type: 'separator' },
+              { label: 'Delete', click:()=>mainWindow.webContents.send("command", "delete")   },
+            ]
+        },
         { role: 'viewMenu' },
         { role: 'windowMenu' },
         { role: 'help', submenu: [{ role: 'about' }] },
