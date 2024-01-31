@@ -5,6 +5,7 @@ import "@baklavajs/themes/dist/syrup-dark.css";
 import HelloWorld from './components/HelloWorld.vue'
 
 import ReplyNode from "./components/ReplyNode";
+import SettingNode from "./components/SettingNode";
 import {ExportNode} from "./components/ExportNode"
 import { DependencyEngine } from "baklavajs";
 import { from } from "linq-to-typescript";
@@ -12,6 +13,7 @@ import { from } from "linq-to-typescript";
 window.electronAPI.sendMessage('Hello from App.vue!');
 const baklava = useBaklava();
 baklava.editor.registerNodeType(ReplyNode);
+baklava.editor.registerNodeType(SettingNode);
 baklava.settings.nodes.defaultWidth=400;
 const engine = new DependencyEngine(baklava.editor);
 

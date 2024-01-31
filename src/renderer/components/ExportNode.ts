@@ -1,21 +1,42 @@
 import { from } from "linq-to-typescript";
 import { AbstractNode, DependencyEngine, Editor, applyResult } from "baklavajs";
 import ReplyNode from "./ReplyNode";
+import SettingNode from "./SettingNode";
 
 function GetNextNum(nowNum:number, randPlus:number, randFix:number):number
 {
-    return nowNum + Math.floor(Math.random() * (randPlus)) + randFix;
+    const result = nowNum + Math.floor(Math.random() * (randPlus)) + randFix;
+    return (result > nowNum)?result:nowNum+1;
 }
 
 function SetResNumber(sortedNodes:readonly AbstractNode[]):void
 {
+    let lastNum:(number|undefined) = undefined;
     let nowNum = 1;
     let randPlus = 4;
     let randFix = 1;
+    let defaultName = "名無しさん";
     for ( const node of sortedNodes){
         if(node instanceof ReplyNode){
             node.inputs.resNumber.value = nowNum;
+            node.inputs.defaultName.value = defaultName;
+            lastNum = nowNum;
             nowNum = GetNextNum(nowNum, randPlus, randFix);
+        }
+        else if(node instanceof SettingNode){
+            randPlus = node.inputs.randPlus.value;
+            randFix = node.inputs.randFix.value;
+            const dn = node.inputs.defaultName.value;
+            if(dn)
+            defaultName = node.inputs.defaultName.value;
+            const nn = node.inputs.startNum.value;
+            if(nn>0){
+                nowNum = nn;
+            }
+            else{
+                if(lastNum != undefined)
+                    nowNum = GetNextNum(lastNum, randPlus, randFix);//計算済みの場合前回の結果から再計算
+            }
         }
         else{
             throw new Error('not implemented');
@@ -27,7 +48,7 @@ function MakeNodeString(node:AbstractNode):string
 {
     if(node instanceof ReplyNode){
         const resNum = node.inputs.resNumber.value;
-        let handleName = (!node.inputs.handleName.value)?node.inputs.handleName.name:node.inputs.handleName.value;
+        let handleName = (!node.inputs.handleName.value)?node.inputs.defaultName.value:node.inputs.handleName.value;
         let contents = node.inputs.contents.value;
         const nodeNum = node.inputs.nodeNum.value;
         if(nodeNum>0){
@@ -62,7 +83,10 @@ function MakeNodeString(node:AbstractNode):string
         }
         return `《id:r${resNum}》${resNum}：${handleName}`+"\n"+
         `${contents}`+"\n"+
-        `《id:r${resNum}e》　`
+        `《id:r${resNum}e》`+"\n";
+    }
+    else if(node instanceof SettingNode){
+        return '';
     }
     else{
         throw new Error('not implemented');
@@ -83,7 +107,7 @@ export function ExportNode(nodes:readonly AbstractNode[], editor:Editor, engine:
         applyResult(result, editor);
         return from(sortedNodes)
             .select(n=>MakeNodeString(n))
-            .aggregate((a,b)=>a+"\n"+b);
+            .aggregate((a,b)=>a+b);
     });
 
 }

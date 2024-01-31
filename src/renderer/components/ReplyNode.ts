@@ -8,7 +8,8 @@ export default defineDynamicNode({
     title:"レス内容",
     inputs:{
         resNumber:()=>new IntegerInterface("自身のレス番号",0).setPort(false).setHidden(true),
-        handleName:()=>new TextInputInterface("名無しさん", "").setPort(false),
+        defaultName:()=>new TextInputInterface("デフォルト名","").setPort(false).setHidden(true),
+        handleName:()=>new TextInputInterface("名前", "").setPort(false),
         contents:()=> new TextInputInterface("内容", "").setPort(false).setComponent(markRaw(MultiLineTextComponent)),
         nodeNum: ()=>new IntegerInterface("アンカー数", 0, 0 ,20).setPort(false),
     },
