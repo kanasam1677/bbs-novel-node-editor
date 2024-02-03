@@ -78,7 +78,7 @@ ipcMain.on('saveOnFile', (event, contents, type) => {
       return;
     }
     let filePath = result.filePath??"";
-    if(!filePath.endsWith(".txt"))//拡張子をtxtに強制して攻撃防止…？
+    if((type=='export') && !filePath.endsWith(".txt"))//拡張子をtxtに強制して攻撃防止…？
       filePath = filePath + ".txt";
     fs.writeFile(
       filePath,
@@ -89,7 +89,8 @@ ipcMain.on('saveOnFile', (event, contents, type) => {
       //        (execFileは安全だがエディタのexeを指定する必要があるため既定のエディタで自動で開きたい場合使用できない？)
       //        ・showSaveDialogのほうでファイル名に使用できない文字等ある程度のサニタイズはかかるようだがこれで完全かは不明
       //        ・拡張子を変更して実行させる攻撃の対策として拡張子.txtを強制付加しているが完全かは不明
-      child_process.exec(filePath);
+      if(type=='export')
+        child_process.exec(filePath);
     })
     .catch((reason)=>console.log(reason));
   });
