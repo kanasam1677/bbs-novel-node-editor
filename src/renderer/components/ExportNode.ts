@@ -102,6 +102,8 @@ function MakeNodeString(node:AbstractNode):string
 
 export function ExportNode(nodes:readonly AbstractNode[], editor:Editor, engine:DependencyEngine):Promise<string>
 {
+    if((nodes?.length??0)<=0)
+        return new Promise<string>((resolve, reject)=>reject("ノードを配置してください。"));
     //HACK:Typescriptのpositionが存在しない旨の警告を抑制
     //     positionはAbstructNodeにrenderer-vueにて後付けされている？？がそれを参照する方法がわからない
     //     https://github.com/newcat/baklavajs/blob/60f0c88a462c21536ffe99803974f6d38c945b70/packages/renderer-vue/src/overrides.d.ts#L14

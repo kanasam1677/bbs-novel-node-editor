@@ -80,6 +80,8 @@ window.electronAPI.onExport((value:any)=>{
   ExportNode(baklava.editor.graph.nodes, baklava.editor, engine).then((result)=>
   {
     window.electronAPI.saveOnFile(result, 'export');
+  }).catch((reason)=>{
+    window.electronAPI.sendErrorMessage('エクスポート失敗', reason);
   });
 });
 
@@ -138,6 +140,8 @@ watch(activeTab, ()=>{
     ExportNode(baklava.editor.graph.nodes, baklava.editor, engine).then((result)=>
     {
       previewStr.value = result;
+    }).catch((reason)=>{
+      previewStr.value = reason;
     });
   }
 })
