@@ -69,7 +69,13 @@ export function CreateMenu(mainWindow:BrowserWindow){
                     title: 'License',
                     parent:mainWindow,
                     modal:true,
+                    webPreferences: {
+                        preload: join(__dirname, 'preload.js'),
+                        nodeIntegration: false,
+                        contextIsolation: true,
+                    }
                 });
+                subWindow.setMenuBarVisibility(false);
                 if (process.env.NODE_ENV === 'development') {
                     const rendererPort = process.argv[2];
                     subWindow.loadURL(`http://localhost:${rendererPort}/license.html`);

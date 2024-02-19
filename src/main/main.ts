@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, session, Menu, dialog} from 'electron';
+import {app, BrowserWindow, ipcMain, session, Menu, dialog, shell} from 'electron';
 import fs from "node:fs/promises";
 import {join} from 'path';
 import { CreateMenu } from './menu';
@@ -94,4 +94,8 @@ ipcMain.on('saveOnFile', (event, contents, type) => {
     })
     .catch((reason)=>console.log(reason));
   });
+})
+
+ipcMain.on("openBrowser",(event,url)=>{
+  shell.openExternal(url);
 })
