@@ -10,6 +10,7 @@ import DescriptiveNode from "./components/DescriptiveNode";
 import {ExportNode} from "./components/ExportNode"
 import { DependencyEngine } from "baklavajs";
 import { from } from "linq-to-typescript";
+import { ref, watch } from "vue";
 
 window.electronAPI.sendMessage('Hello from App.vue!');
 const baklava = useBaklava();
@@ -79,6 +80,8 @@ window.electronAPI.onExport((value:any)=>{
   ExportNode(baklava.editor.graph.nodes, baklava.editor, engine).then((result)=>
   {
     window.electronAPI.saveOnFile(result, 'export');
+  }).catch((reason)=>{
+    window.electronAPI.sendErrorMessage('エクスポート失敗', reason);
   });
 });
 
@@ -128,7 +131,20 @@ window.electronAPI.onCommand((commandStr:string)=>{
       throw new Error('not implemented');
   }
 });
-
+let activeTab = ref("editor");
+let previewStr = ref("文字列");
+watch(activeTab, ()=>{
+  if(activeTab.value == 'preview'){
+    previewStr.value = '処理中…';
+    window.electronAPI.sendMessage('preview started');
+    ExportNode(baklava.editor.graph.nodes, baklava.editor, engine).then((result)=>
+    {
+      previewStr.value = result;
+    }).catch((reason)=>{
+      previewStr.value = reason;
+    });
+  }
+})
 </script>
 
 <template>
@@ -143,9 +159,33 @@ window.electronAPI.onCommand((commandStr:string)=>{
     </div>
     <HelloWorld msg="Vite + Vue" />
   -->
-  <div style="width: 100vw; height: 100vh">
-    <baklavaEditor :view-model="baklava" />
+  <div id = "app">
+    <div class="tabs">
+      <div v-bind:class="{'active-tab': activeTab == 'editor'}">
+        <input id="tab_editor" type="radio" name="tab_item" v-model="activeTab" value="editor">
+        <label class="tab_item" for="tab_editor">エディター</label>
+      </div>
+      <div v-bind:class="{'active-tab': activeTab == 'preview'}">
+        <input id="tab_preview" type="radio" name="tab_item" v-model="activeTab" value="preview">
+        <label class="tab_item" for="tab_preview">プレビュー</label>    
+      </div>
+    </div>
+    <div class="tab_contents" >
+      <div v-if="activeTab == 'editor'" >
+        <div style="width: 100vw; height: calc(100vh - 70px)"><baklavaEditor :view-model="baklava" />
+        </div>
+      </div>
+      <div v-else-if="activeTab == 'preview'">
+        <div id="preview_box"><p>{{ previewStr }}</p></div>
+      </div>
+    </div>
   </div>
+  <!--
+
+    <div style="width: 100vw; height: 100vh">
+      <baklavaEditor :view-model="baklava" />
+    </div>
+  -->
 </template>
 
 <style>
@@ -156,4 +196,44 @@ window.electronAPI.onCommand((commandStr:string)=>{
 button[title$="Subgraph"]{
   visibility: hidden;
 }
+.tabs {
+  margin-top: 50px;
+  padding-bottom: 40px;
+  margin: 0 auto;
+}
+.tab_item {
+  width: calc(100%/3);
+  height: 50px;
+  border-bottom: 3px solid #5ab4bd;
+  background-color: #d9d9d9;
+  line-height: 50px;
+  font-size: 16px;
+  text-align: center;
+  color: #565656;
+  display: block;
+  float: left;
+  text-align: center;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+.tab_item:hover {
+  opacity: 0.75;
+}
+input[name="tab_item"] {
+  display: none;
+}
+.active-tab *{
+  background-color: #5ab4bd;
+  color: #fff;
+}
+.tab_contents{
+  width: 100vw;
+  height:calc(100vh - 50px);
+}
+#preview_box{
+  background:#fffade;
+  text-align: left;
+  white-space: pre-line;
+}
+
 </style>
