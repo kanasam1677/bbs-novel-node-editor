@@ -171,12 +171,11 @@ watch(activeTab, ()=>{
       </div>
     </div>
     <div class="tab_contents" >
-      <div v-if="activeTab == 'editor'" >
-        <div style="width: 100vw; height: calc(100vh - 70px)"><baklavaEditor :view-model="baklava" />
-        </div>
+      <div v-if="activeTab == 'editor'" style="width: 100vw; height: calc(100vh - 60px)">
+        <baklavaEditor :view-model="baklava" />
       </div>
-      <div v-else-if="activeTab == 'preview'">
-        <div id="preview_box"><p>{{ previewStr }}</p></div>
+      <div v-else-if="activeTab == 'preview'" id="preview_box">
+        <p>{{ previewStr }}</p>
       </div>
     </div>
   </div>
@@ -228,7 +227,8 @@ input[name="tab_item"] {
 }
 .tab_contents{
   width: 100vw;
-  height:calc(100vh - 50px);
+  height:calc(100vh - 60px);
+  overflow:auto;
 }
 #preview_box{
   background:#fffade;
