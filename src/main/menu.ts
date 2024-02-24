@@ -1,4 +1,5 @@
-import {BrowserWindow, Menu, MenuItemConstructorOptions, app, dialog, KeyboardInputEvent} from 'electron';
+import {BrowserWindow, Menu, MenuItemConstructorOptions, app, dialog, KeyboardInputEvent, shell} from 'electron';
+import {join} from 'path';
 import fs from "node:fs/promises";
 
 function LoadClicked(mainWindow:BrowserWindow){
@@ -60,7 +61,32 @@ export function CreateMenu(mainWindow:BrowserWindow){
         },
         { role: 'viewMenu' },
         { role: 'windowMenu' },
-        { role: 'help', submenu: [{ role: 'about' }] },
+        { role: 'help', submenu: [
+            { role: 'about' },
+            { label: 'Open Github Page', click:()=>shell.openExternal('https://github.com/kanasam1677/bbs-novel-node-editor')},
+            { label: 'License', click:()=>{
+                const subWindow = new BrowserWindow({
+                    title: 'License',
+                    parent:mainWindow,
+                    modal:true,
+                    webPreferences: {
+                        preload: join(__dirname, 'preload.js'),
+                        nodeIntegration: false,
+                        contextIsolation: true,
+                    }
+                });
+                subWindow.setMenuBarVisibility(false);
+                if (process.env.NODE_ENV === 'development') {
+                    const rendererPort = process.argv[2];
+                    subWindow.loadURL(`http://localhost:${rendererPort}/license.html`);
+                  }
+                  else {
+                    subWindow.loadFile(join(app.getAppPath(), 'renderer', 'license.html'));
+                  }
+              }
+            },
+            ]
+        },
     ];
     
     // macOS では "アプリメニュー" が必要

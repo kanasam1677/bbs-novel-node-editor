@@ -87,7 +87,7 @@ function MakeNodeString(node:AbstractNode):string
         }
         return `《id:r${resNum}》${resNum}：${handleName}`+"\n"+
         `${contents}`+"\n"+
-        `《id:r${resNum}e》`+"\n";
+        `《id:r${resNum}e》　`+"\n";//NOTE:全角スペースはハーメルン側の掲示板テンプレ生成の仕様に合わせている
     }
     else if(node instanceof SettingNode){
         return '';
