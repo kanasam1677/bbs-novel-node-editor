@@ -1,19 +1,20 @@
 {
-  "name": "electron-vue-template",
+  "name": "bbs-novel-node-editor",
   "version": "0.1.0",
-  "description": "A minimal Electron + Vue application",
+  "description": "Editor for bbs-type-nobel",
   "main": "build/main/main.js",
   "scripts": {
     "dev": "node scripts/dev-server.js",
     "build": "node scripts/build.js && electron-builder",
     "build:win": "node scripts/build.js && electron-builder --win",
     "build:mac": "node scripts/build.js && electron-builder --mac",
-    "build:linux": "node scripts/build.js && electron-builder --linux"
+    "build:linux": "node scripts/build.js && electron-builder --linux",
+    "publish:win":  "node scripts/build.js && electron-builder --win --publish onTagOrDraft"
   },
-  "repository": "https://github.com/deluze/electron-vue-template",
+  "repository": "https://github.com/kanasam1677/bbs-novel-node-editor",
   "author": {
-    "name": "Deluze",
-    "url": "https://github.com/Deluze"
+    "name": "kanasam1677",
+    "url": "https://github.com/kanasam1677"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.4.1",
@@ -25,6 +26,8 @@
     "vite": "^4.5.0"
   },
   "dependencies": {
+    "baklavajs": "^2.3.0",
+    "linq-to-typescript": "^11.1.0",
     "vue": "^3.3.8"
   }
 }

@@ -1,6 +1,7 @@
 const Path = require('path');
 const vuePlugin = require('@vitejs/plugin-vue')
 
+const { resolve } = require('path')
 const { defineConfig } = require('vite');
 
 /**
@@ -14,6 +15,12 @@ const config = defineConfig({
     },
     open: false,
     build: {
+        rollupOptions:{
+            input:{
+                main: resolve(__dirname, 'src', 'renderer', 'index.html'),
+                license: resolve(__dirname, 'src', 'renderer', 'license.html'),
+            }
+        },
         outDir: Path.join(__dirname, 'build', 'renderer'),
         emptyOutDir: true,
     },

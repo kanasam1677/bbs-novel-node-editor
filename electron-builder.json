@@ -1,5 +1,5 @@
 {
-    "appId": "com.electron.app",
+    "appId": "com.electron.bbs-novel-node-editor",
     "directories": {
         "output": "dist"
     },
@@ -7,13 +7,19 @@
         "oneClick": false,
         "perMachine": false,
         "allowToChangeInstallationDirectory": true,
-        "shortcutName": "Electron App"
+        "shortcutName": "bbs-novel-node-editor"
+    },
+    "mac": {
+        "target": "dmg",
+        "icon": "icon.png"
     },
     "win": {
-        "target": "nsis"
+        "target": "nsis",
+        "icon": "icon.png"
     },
     "linux":  {
-        "target": ["snap"]
+        "target": ["snap"],
+        "icon": "icon.png"
     },
     "files": [
         "build/main/**/*",
@@ -27,6 +33,7 @@
             "to": "static",
             "filter": ["**/*"]
         },
+        "icon.png",
         "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
         "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
         "!**/node_modules/*.d.ts",
