@@ -1,6 +1,6 @@
 {
   "name": "bbs-novel-node-editor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Editor for bbs-type-nobel",
   "main": "build/main/main.js",
   "scripts": {
